@@ -23,7 +23,7 @@
 - **[infinite-scroll]**https://github.com/danbovey/react-infinite-scroller
 - **[mockapi]**https://mockapi.io/projects
 - **[react-select]**https://react-select.com/home
-- **[react-spinners]**https://www.davidhu.io/react-spinners/
+- **[spinner-loader]**https://mhnpd.github.io/react-loader-spinner/docs/components/oval
 - **[content-loader]**https://github.com/danilowoz/react-content-loader
 - **[]**
 - **[]**

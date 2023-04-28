@@ -5,7 +5,13 @@ export const Container = styled.section`
   padding-left: 10px;
   position: relative;
   line-height: 1.3;
-  background-color: #dbe4ed;
+  background-color: transparent;
+
+  /* Gallery Grid */
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 16px;
+  padding-bottom: 24px;
 
   h1,
   h2 {
@@ -26,6 +32,8 @@ export const Container = styled.section`
   }
 
   @media screen and (min-width: 320px) {
+    padding-right: 24px;
+    padding-left: 24px;
     // max-width: 300px;
   }
   @media screen and (min-width: 768px) {

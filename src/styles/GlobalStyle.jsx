@@ -5,16 +5,12 @@ export const GlobalStyle = createGlobalStyle`
 /* Style */
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+  color: #212121;
+  background-color: #fff;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  font-family: 'Roboto', sans-serif;
-  letter-spacing: 0.02em;
-  line-height: 1.5;
-  color: #000000;
 }
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
@@ -86,6 +82,4 @@ select:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0px 1000px #ffffff inset;
   transition: background-color 5000s ease-in-out 0s;
 }
-
-
 `;

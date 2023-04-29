@@ -10,7 +10,7 @@ export const IconBtn = ({ toggleModal }) => (
     onClick={toggleModal}
     aria-label="close modal"
   >
-    <CloseIcon width="24" height="24" />
+    <CloseIcon width="16" height="16" />
   </button>
 );
 

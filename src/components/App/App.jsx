@@ -8,6 +8,7 @@ import { Gallery } from 'components/Gallery/Gallery';
 import { Button } from 'components/Button/Button';
 import { Loader } from 'components/Loader/Loader';
 import { Modal } from 'components/Modal/Modal';
+import { Toast, notifyOk, notifyEnd } from 'components/Toast/Toast';
 
 const IDLE = 'idle';
 const PENDING = 'pending';
@@ -24,12 +25,12 @@ export class App extends Component {
     isLastPage: true,
     normalData: [],
     isModalOpen: false,
-    modalImage: {},
+    modalImage: null,
   };
 
   // ---------LifeCycle Methods--------- //
   async componentDidUpdate(prevProps, prevState) {
-    const { searchQuery, page } = this.state;
+    const { searchQuery, page, normalData } = this.state;
 
     if (prevState.searchQuery !== searchQuery || prevState.page !== page) {
       //   this.setState({ status: PENDING, error: null });
@@ -43,28 +44,31 @@ export class App extends Component {
           isLastPage: normalData.length === 0,
           normalData: [...prevState.normalData, ...normalData],
         }));
+        normalData.length > 0
+          ? notifyOk(this.state.normalData.length, normalData.length)
+          : notifyEnd(this.state.normalData.length);
       } catch (error) {
         this.setState({ error, status: REJECTED, isLastPage: true });
+        normalData[0] && notifyEnd(normalData.length);
       }
     }
   }
 
   // -----------Custom Methods---------- //
-  handleSubmit = searchQuery => this.setState(searchQuery);
+  handleSubmit = ({ searchQuery }) =>
+    this.setState({ searchQuery, page: 1, normalData: [] });
 
-  handleClick = () => {
-    const { page, isLastPage } = this.state;
-    return this.setState(!isLastPage && { page: page + 1 });
-  };
+  handleClick = () =>
+    this.setState(prevState => ({ page: prevState.page + 1 }));
+  //   const { page, isLastPage } = this.state;
+  //   return this.setState(!isLastPage && { page: page + 1 });
+  // };
 
-  toggleModal = modalImage => {
-    console.log(`Toggle-try ${Date.now()}`);
-
-    return this.setState(prevState => ({
+  toggleModal = (modalImage = null) =>
+    this.setState(prevState => ({
       isModalOpen: !prevState.isModalOpen,
       modalImage,
     }));
-  };
 
   // -----------Render Method----------- //
   render() {
@@ -76,10 +80,13 @@ export class App extends Component {
         <Searchbar handleSubmit={this.handleSubmit} />
         <Gallery normalData={normalData} toggleModal={this.toggleModal} />
         {status === PENDING && <Loader />}
-        {!isLastPage && <Button handleClick={this.handleClick} />}
+        {!isLastPage && status === RESOLVED && (
+          <Button handleClick={this.handleClick} />
+        )}
         {isModalOpen && (
           <Modal toggleModal={this.toggleModal} modalImage={modalImage} />
         )}
+        <Toast />
       </Section>
     );
   }

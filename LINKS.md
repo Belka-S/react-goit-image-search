@@ -18,7 +18,6 @@
 - **[typefaces]**https://github.com/KyleAMathews/typefaces/tree/master/packages
 - **[webfontloader]**https://github.com/typekit/webfontloader
 - **[react-player]**https://github.com/CookPete/react-player
-- **[react-toastify]**https://fkhadra.github.io/react-toastify/introduction
 - **[react-hot-toast]**https://react-hot-toast.com/
 - **[infinite-scroll]**https://github.com/danbovey/react-infinite-scroller
 - **[mockapi]**https://mockapi.io/projects

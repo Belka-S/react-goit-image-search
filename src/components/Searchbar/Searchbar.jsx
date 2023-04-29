@@ -7,7 +7,7 @@ export const Searchbar = ({ handleSubmit }) => (
   <header className={css.Searchbar}>
     <Formik
       initialValues={{ searchQuery: '' }}
-      validate={values => {}}
+      // validate={values => {}}
       onSubmit={(values, actions) => {
         handleSubmit(values);
         actions.resetForm();

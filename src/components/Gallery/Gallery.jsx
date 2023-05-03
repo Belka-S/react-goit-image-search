@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import { GalleryItem } from 'components/GalleryItem/GalleryItem';
 import css from 'styles/Styles.module.scss';
 
-export const Gallery = ({ normalData, toggleModal }) => (
+export const Gallery = ({ normalData }) => (
   <ul className={css.ImageGallery}>
-    <GalleryItem normalData={normalData} toggleModal={toggleModal} />
+    <GalleryItem normalData={normalData} />
   </ul>
 );
 
@@ -16,5 +16,4 @@ Gallery.propTypes = {
       tags: PropTypes.string.isRequired,
     })
   ).isRequired,
-  toggleModal: PropTypes.func.isRequired,
 };

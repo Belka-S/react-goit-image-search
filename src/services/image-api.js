@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+axios.defaults.baseURL = 'https://pixabay.com/api';
+const API_KEY = '34106733-e100dcdc1add944a5aa3c5584';
 const SAEARCH_OPTIONS = {
   type: {
     all: 'all',
@@ -11,8 +13,7 @@ const SAEARCH_OPTIONS = {
   safeSearch: [true, false],
   perPage: [12, 162],
 };
-axios.defaults.baseURL = 'https://pixabay.com/api';
-const API_KEY = '34106733-e100dcdc1add944a5aa3c5584';
+
 export const fetchImage = async (searchQuery, page) => {
   const params = {
     q: searchQuery,

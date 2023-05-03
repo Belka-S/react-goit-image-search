@@ -7,7 +7,6 @@ import { normalize } from 'services/normalize';
 import { Gallery } from 'components/Gallery/Gallery';
 import { Button } from 'components/Button/Button';
 import { Loader } from 'components/Loader/Loader';
-import { Modal } from 'components/Modal/Modal';
 import { Toast, notifyOk, notifyEnd } from 'components/Toast/Toast';
 
 const IDLE = 'idle';
@@ -24,8 +23,6 @@ export class App extends Component {
     page: 1,
     isLastPage: true,
     normalData: [],
-    isModalOpen: false,
-    modalImage: null,
   };
 
   // ---------LifeCycle Methods--------- //
@@ -60,31 +57,18 @@ export class App extends Component {
 
   handleClick = () =>
     this.setState(prevState => ({ page: prevState.page + 1 }));
-  //   const { page, isLastPage } = this.state;
-  //   return this.setState(!isLastPage && { page: page + 1 });
-  // };
-
-  toggleModal = (modalImage = null) =>
-    this.setState(prevState => ({
-      isModalOpen: !prevState.isModalOpen,
-      modalImage,
-    }));
 
   // -----------Render Method----------- //
   render() {
-    const { status, isLastPage, normalData, isModalOpen, modalImage } =
-      this.state;
+    const { status, isLastPage, normalData } = this.state;
 
     return (
       <Section>
         <Searchbar handleSubmit={this.handleSubmit} />
-        <Gallery normalData={normalData} toggleModal={this.toggleModal} />
+        <Gallery normalData={normalData} />
         {status === PENDING && <Loader />}
         {!isLastPage && status === RESOLVED && (
           <Button handleClick={this.handleClick} />
-        )}
-        {isModalOpen && (
-          <Modal toggleModal={this.toggleModal} modalImage={modalImage} />
         )}
         <Toast />
       </Section>

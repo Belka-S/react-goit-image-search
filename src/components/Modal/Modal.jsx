@@ -18,18 +18,18 @@ export class Modal extends Component {
 
   handleKeyDown = e => {
     if (e.key === 'Escape') {
-      this.props.toggleModal();
+      this.props.closeModal();
     }
   };
 
   handleBackdropClick = e =>
-    e.target === e.currentTarget && this.props.toggleModal();
+    e.target === e.currentTarget && this.props.closeModal();
 
   handleLoad = e => this.setState({ isConnected: e.target.isConnected });
 
   render() {
     const {
-      toggleModal,
+      closeModal,
       modalImage: { largeImageURL, tags },
     } = this.props;
 
@@ -42,7 +42,7 @@ export class Modal extends Component {
             alt={tags}
             onLoad={this.handleLoad}
           />
-          {this.state.isConnected && <IconBtn toggleModal={toggleModal} />}
+          {this.state.isConnected && <IconBtn closeModal={closeModal} />}
         </div>
       </div>,
       modalRoot
@@ -51,7 +51,7 @@ export class Modal extends Component {
 }
 
 Modal.propTypes = {
-  toggleModal: PropTypes.func.isRequired,
+  closeModal: PropTypes.func.isRequired,
   modalImage: PropTypes.shape({
     largeImageURL: PropTypes.string,
     tags: PropTypes.string.isRequired,

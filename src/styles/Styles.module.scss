@@ -187,11 +187,7 @@
   background-color: #303f9f;
 }
 
-.IconButton {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-
+%IconButton {
   margin: 0;
   padding: 10px;
   display: inline-flex;
@@ -205,12 +201,41 @@
   fill: white;
   background-color: rgba(0, 0, 0, 0.2);
   font: inherit;
-  transition: fill 250ms, border-color 250ms;
 
-  &:hover,
-  &:focus {
-    fill: tomato;
+  svg {
+    transition: fill 250ms;
+
+    &:hover,
+    &:focus {
+      fill: tomato;
+    }
   }
+}
+
+.CloseBtn {
+  @extend %IconButton;
+
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.NextBtn {
+  @extend %IconButton;
+
+  position: fixed;
+  top: 50%;
+  right: 50px;
+  transform: translateY(-50%);
+}
+
+.PrevBtn {
+  @extend %IconButton;
+
+  position: fixed;
+  top: 50%;
+  left: 50px;
+  transform: translateY(-50%);
 }
 
 .Loader {

@@ -6,10 +6,40 @@ import css from 'styles/Styles.module.scss';
 export const GalleryItem = ({ normData }) => {
   const [modalImage, setModalImage] = useState(null);
 
-  const openModal = ({ largeImageURL, tags }) => {
+  const openModal = ({ largeImageURL, tags }, index) => {
     setModalImage({
       largeImageURL,
       tags,
+      index,
+    });
+  };
+
+  const showNextImage = step => {
+    const { index } = modalImage;
+    index === normData.length - 1 && setModalImage({ index: 0 });
+
+    if (step > 0 && index === normData.length - 1) {
+      setModalImage({
+        index: 0,
+        largeImageURL: normData[0].largeImageURL,
+        tags: normData[0].tags,
+      });
+      return;
+    }
+
+    if (step < 0 && index === 0) {
+      setModalImage({
+        index: normData.length - 1,
+        largeImageURL: normData[normData.length - 1].largeImageURL,
+        tags: normData[normData.length - 1].tags,
+      });
+      return;
+    }
+
+    setModalImage({
+      index: index + step,
+      largeImageURL: normData[index + step].largeImageURL,
+      tags: normData[index + step].tags,
     });
   };
 
@@ -21,9 +51,15 @@ export const GalleryItem = ({ normData }) => {
         className={css['ImageGalleryItem-image']}
         src={el.webformatURL}
         alt={el.tags}
-        onClick={() => openModal(el)}
+        onClick={() => openModal(el, normData.indexOf(el))}
       />
-      {modalImage && <Modal modalImage={modalImage} closeModal={closeModal} />}
+      {modalImage && (
+        <Modal
+          modalImage={modalImage}
+          closeModal={closeModal}
+          showNextImage={showNextImage}
+        />
+      )}
     </li>
   ));
 };

@@ -1,17 +1,23 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { IconBtn } from 'components/Button/IconBtn';
+import { CloseBtn, NextBtn, PrevBtn } from 'components/Button/IconBtn';
 import { createPortal } from 'react-dom';
 import css from 'styles/Styles.module.scss';
 
 const modalRoot = document.querySelector('#modal-root');
 
-export const Modal = ({ closeModal, modalImage: { largeImageURL, tags } }) => {
+export const Modal = ({
+  closeModal,
+  showNextImage,
+  modalImage: { largeImageURL, tags },
+}) => {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   useEffect(() => {
     const handleKeyDown = e => {
       e.key === 'Escape' && closeModal();
+      e.key === 'ArrowRight' && showNextImage(1);
+      e.key === 'ArrowLeft' && showNextImage(-1);
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -19,7 +25,7 @@ export const Modal = ({ closeModal, modalImage: { largeImageURL, tags } }) => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [closeModal]);
+  }, [closeModal, showNextImage]);
 
   const handleBackdropClick = e => e.target === e.currentTarget && closeModal();
 
@@ -32,7 +38,13 @@ export const Modal = ({ closeModal, modalImage: { largeImageURL, tags } }) => {
           alt={tags}
           onLoad={e => setIsImageLoaded(e.target.isConnected)}
         />
-        {isImageLoaded && <IconBtn closeModal={closeModal} />}
+        {isImageLoaded && (
+          <>
+            <CloseBtn closeModal={closeModal} />
+            <NextBtn closeModal={() => showNextImage(1)} />
+            <PrevBtn closeModal={() => showNextImage(-1)} />
+          </>
+        )}
       </div>
     </div>,
     modalRoot
@@ -41,6 +53,7 @@ export const Modal = ({ closeModal, modalImage: { largeImageURL, tags } }) => {
 
 Modal.propTypes = {
   closeModal: PropTypes.func.isRequired,
+  showNextImage: PropTypes.func.isRequired,
   modalImage: PropTypes.shape({
     largeImageURL: PropTypes.string,
     tags: PropTypes.string.isRequired,

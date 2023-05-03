@@ -9,7 +9,7 @@ export const Gallery = ({ normData }) => (
 );
 
 Gallery.propTypes = {
-  normalData: PropTypes.arrayOf(
+  normData: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
       webformatURL: PropTypes.string.isRequired,

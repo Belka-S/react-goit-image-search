@@ -29,7 +29,7 @@ export const GalleryItem = ({ normData }) => {
 };
 
 GalleryItem.propTypes = {
-  normalData: PropTypes.arrayOf(
+  normData: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
       webformatURL: PropTypes.string.isRequired,

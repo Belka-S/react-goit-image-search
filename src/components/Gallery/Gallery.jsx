@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import { GalleryItem } from 'components/GalleryItem/GalleryItem';
 import css from 'styles/Styles.module.scss';
 
-export const Gallery = ({ normalData }) => (
+export const Gallery = ({ normData }) => (
   <ul className={css.ImageGallery}>
-    <GalleryItem normalData={normalData} />
+    <GalleryItem normData={normData} />
   </ul>
 );
 

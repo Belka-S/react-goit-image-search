@@ -1,7 +1,7 @@
 import toast, { Toaster } from 'react-hot-toast';
 
-export const notifyOk = (prevDatalength, dataLength) =>
-  toast(`Here are your ${prevDatalength + dataLength} images.`);
+export const notifyOk = dataLength =>
+  toast(`Here are your ${dataLength} images.`);
 
 export const notifyEnd = dataLength =>
   toast(`Search limit is reached! There are only ${dataLength} images.`);
@@ -16,7 +16,7 @@ export const Toast = () => (
     toastOptions={{
       // Define default options
       className: '',
-      duration: 3000,
+      duration: 2000,
       style: {
         background: 'tomato',
         color: '#fff',

@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useReducer, useEffect } from 'react';
 
 import { Section } from 'components/Section/Section';
 import { Searchbar } from 'components/Searchbar/Searchbar';
@@ -14,64 +14,70 @@ const PENDING = 'pending';
 const REJECTED = 'rejected';
 const RESOLVED = 'resolved';
 
-export class App extends Component {
-  // ---------------State--------------- //
-  state = {
+const reducer = (state, action) => ({ ...state, ...action });
+
+export const App = () => {
+  const [state, dispatch] = useReducer(reducer, {
     status: IDLE,
     error: null,
     searchQuery: '',
+    normData: [],
     page: 1,
-    isLastPage: true,
-    normalData: [],
-  };
+    pageCount: 1,
+    isLastPage: false,
+  });
+  const { searchQuery, page, status, isLastPage, normData, pageCount } = state;
 
-  // ---------LifeCycle Methods--------- //
-  async componentDidUpdate(prevProps, prevState) {
-    const { searchQuery, page, normalData } = this.state;
+  useEffect(() => {
+    if (searchQuery === '' || pageCount > page) return;
 
-    if (prevState.searchQuery !== searchQuery || prevState.page !== page) {
-      //   this.setState({ status: PENDING, error: null });
-      //   imageAPI.fetchImage(searchQuery, page).then(fetchedData => this.setState({ fetchedData, status: RESOLVED })).catch(error => this.setState({ error, status: REJECTED }));
+    async function foo() {
       try {
-        this.setState({ status: PENDING, error: null });
+        dispatch({ status: PENDING, error: null });
         const fetchedData = await imageAPI.fetchImage(searchQuery, page);
-        const normalData = normalize(fetchedData);
-        this.setState(prevState => ({
+        const normData = [...state.normData, ...normalize(fetchedData)];
+
+        fetchedData.length > 0
+          ? notifyOk(normData.length)
+          : notifyEnd(normData.length);
+
+        dispatch({
           status: RESOLVED,
-          isLastPage: normalData.length === 0,
-          normalData: [...prevState.normalData, ...normalData],
-        }));
-        normalData.length > 0
-          ? notifyOk(this.state.normalData.length, normalData.length)
-          : notifyEnd(this.state.normalData.length);
+          isLastPage: fetchedData.length === 0,
+          pageCount: pageCount + 1,
+          normData,
+        });
       } catch (error) {
-        this.setState({ error, status: REJECTED, isLastPage: true });
-        normalData[0] && notifyEnd(normalData.length);
+        dispatch({ error, status: REJECTED, isLastPage: true });
+        normData[0] && notifyEnd(normData.length);
       }
     }
-  }
+    foo();
+  }, [searchQuery, page, normData, state.normData, pageCount]);
 
-  // -----------Custom Methods---------- //
-  handleSubmit = ({ searchQuery }) =>
-    this.setState({ searchQuery, page: 1, normalData: [] });
+  const handleSubmit = ({ searchQuery }) => {
+    dispatch({
+      status: IDLE,
+      error: null,
+      searchQuery,
+      normData: [],
+      page: 1,
+      pageCount: 1,
+      isLastPage: false,
+    });
+  };
 
-  handleClick = () =>
-    this.setState(prevState => ({ page: prevState.page + 1 }));
+  const handleClick = () => dispatch({ page: state.page + 1 });
 
-  // -----------Render Method----------- //
-  render() {
-    const { status, isLastPage, normalData } = this.state;
-
-    return (
-      <Section>
-        <Searchbar handleSubmit={this.handleSubmit} />
-        <Gallery normalData={normalData} />
-        {status === PENDING && <Loader />}
-        {!isLastPage && status === RESOLVED && (
-          <Button handleClick={this.handleClick} />
-        )}
-        <Toast />
-      </Section>
-    );
-  }
-}
+  return (
+    <Section>
+      <Searchbar handleSubmit={handleSubmit} />
+      <Gallery normData={normData} />
+      {status === PENDING && <Loader />}
+      {!isLastPage && status === RESOLVED && (
+        <Button handleClick={handleClick} />
+      )}
+      <Toast />
+    </Section>
+  );
+};

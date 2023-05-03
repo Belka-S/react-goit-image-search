@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Modal } from 'components/Modal/Modal';
 import css from 'styles/Styles.module.scss';
 
-export const GalleryItem = ({ normalData }) => {
+export const GalleryItem = ({ normData }) => {
   const [modalImage, setModalImage] = useState(null);
 
   const openModal = ({ largeImageURL, tags }) => {
@@ -15,7 +15,7 @@ export const GalleryItem = ({ normalData }) => {
 
   const closeModal = () => setModalImage(null);
 
-  return normalData.map(el => (
+  return normData.map(el => (
     <li className={css.ImageGalleryItem} key={el.id}>
       <img
         className={css['ImageGalleryItem-image']}

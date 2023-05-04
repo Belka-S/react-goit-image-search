@@ -3,16 +3,8 @@ import PropTypes from 'prop-types';
 import { Modal } from 'components/Modal/Modal';
 import css from 'styles/Styles.module.scss';
 
-export const GalleryItem = ({ normData }) => {
+export const GalleryItem = ({ normData, webformatURL, tags }) => {
   const [modalImage, setModalImage] = useState(null);
-
-  const openModal = ({ largeImageURL, tags }, index) => {
-    setModalImage({
-      largeImageURL,
-      tags,
-      index,
-    });
-  };
 
   const showNextImage = step => {
     const { index } = modalImage;
@@ -45,13 +37,19 @@ export const GalleryItem = ({ normData }) => {
 
   const closeModal = () => setModalImage(null);
 
-  return normData.map(el => (
-    <li className={css.ImageGalleryItem} key={el.id}>
+  const openModal = e => {
+    const modalImage = normData.filter(el => el.webformatURL === e.target.src);
+    const index = normData.findIndex(el => el.webformatURL === e.target.src);
+    setModalImage({ ...modalImage[0], index });
+  };
+
+  return (
+    <>
       <img
         className={css['ImageGalleryItem-image']}
-        src={el.webformatURL}
-        alt={el.tags}
-        onClick={() => openModal(el, normData.indexOf(el))}
+        src={webformatURL}
+        alt={tags}
+        onClick={openModal}
       />
       {modalImage && (
         <Modal
@@ -60,11 +58,13 @@ export const GalleryItem = ({ normData }) => {
           showNextImage={showNextImage}
         />
       )}
-    </li>
-  ));
+    </>
+  );
 };
 
 GalleryItem.propTypes = {
+  webformatURL: PropTypes.string.isRequired,
+  tags: PropTypes.string.isRequired,
   normData: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,

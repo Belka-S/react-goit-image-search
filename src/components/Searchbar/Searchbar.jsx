@@ -16,7 +16,6 @@ export const Searchbar = ({
   isLoading,
   searchQuery,
 }) => {
-  console.log(searchQuery);
   return (
     <header className={css.Searchbar}>
       <SelectImageType handleChange={handleChange} />

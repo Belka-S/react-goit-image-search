@@ -4,7 +4,15 @@ import css from 'styles/Styles.module.scss';
 
 export const Gallery = ({ normData }) => (
   <ul className={css.ImageGallery}>
-    <GalleryItem normData={normData} />
+    {normData.map(item => (
+      <li className={css.ImageGalleryItem} key={item.id}>
+        <GalleryItem
+          normData={normData}
+          webformatURL={item.webformatURL}
+          tags={item.tags}
+        />
+      </li>
+    ))}
   </ul>
 );
 

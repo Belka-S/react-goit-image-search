@@ -7,7 +7,7 @@ const styles = {
     ...baseStyles,
     height: '48px',
     // width: '200px',
-    minWidth: '210px',
+    minWidth: '200px',
     border: 'none',
     fontSize: '20px',
   }),
@@ -27,6 +27,17 @@ const styles = {
   }),
   input: baseStyles => ({ ...baseStyles, textTransform: 'capitalize' }),
   singleValue: baseStyles => ({ ...baseStyles, textTransform: 'capitalize' }),
+};
+
+const stylesCategory = {
+  ...styles,
+  control: baseStyles => ({
+    ...baseStyles,
+    height: '48px',
+    minWidth: '300px',
+    border: 'none',
+    fontSize: '20px',
+  }),
 };
 
 const optionsPerPage = [
@@ -91,11 +102,11 @@ export const SelectCategory = ({ handleSelect, isLoading, searchQuery }) => (
   <Select
     onChange={(option, name) => handleSelect(option, name)}
     placeholder={
-      searchQuery === '' ? 'Select category' : `"${searchQuery}" is found!`
+      searchQuery === '' ? 'Select category' : `Looking for "${searchQuery}"`
     }
     name="category"
     options={[{ value: searchQuery, label: searchQuery }, ...optionsCategory]}
-    styles={styles}
+    styles={stylesCategory}
     isLoading={isLoading}
     isSearchable={true}
     value={false}

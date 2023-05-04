@@ -1,33 +1,41 @@
 import PropTypes from 'prop-types';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { BsSearch } from 'react-icons/bs';
+import {
+  SelectCategory,
+  SelectImageOrientation,
+  SelectImageType,
+  SelectPerPage,
+} from './FormSelect';
+
 import css from 'styles/Styles.module.scss';
+import { FormSearch } from './FormSearch';
 
-export const Searchbar = ({ handleSubmit }) => (
-  <header className={css.Searchbar}>
-    <Formik
-      initialValues={{ searchQuery: '' }}
-      // validate={values => {}}
-      onSubmit={(values, actions) => {
-        handleSubmit(values);
-        actions.resetForm();
-      }}
-    >
-      <Form className={css.SearchForm}>
-        <Field
-          name="searchQuery"
-          className={css['SearchForm-input']}
-          autoComplete="off"
-          autoFocus
-          placeholder="Search images and photos"
-        />
-        <ErrorMessage name="email" component="div" />
-        <button type="submit" className={css['SearchForm-button']}>
-          <BsSearch size={20} />
-        </button>
-      </Form>
-    </Formik>
-  </header>
-);
+export const Searchbar = ({
+  handleSubmit,
+  handleChange,
+  handleSelect,
+  isLoading,
+  searchQuery,
+}) => {
+  console.log(searchQuery);
+  return (
+    <header className={css.Searchbar}>
+      <SelectImageType handleChange={handleChange} />
+      <SelectImageOrientation handleChange={handleChange} />
+      <SelectPerPage handleChange={handleChange} />
+      <FormSearch handleSubmit={handleSubmit} />
+      <SelectCategory
+        handleSelect={handleSelect}
+        isLoading={isLoading}
+        searchQuery={searchQuery}
+      />
+    </header>
+  );
+};
 
-Searchbar.propTypes = { handleSubmit: PropTypes.func.isRequired };
+Searchbar.propTypes = {
+  handleSubmit: PropTypes.func.isRequired,
+  handleChange: PropTypes.func.isRequired,
+  handleSelect: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  searchQuery: PropTypes.string,
+};

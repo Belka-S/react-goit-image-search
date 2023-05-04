@@ -18,15 +18,26 @@ const reducer = (state, action) => ({ ...state, ...action });
 
 export const App = () => {
   const [state, dispatch] = useReducer(reducer, {
+    searchOptions: {
+      searchQuery: '',
+      image_type: 'all',
+      orientation: 'horizontal',
+      per_page: 24,
+      page: 1,
+    },
     status: IDLE,
     error: null,
-    searchQuery: '',
     normData: [],
-    page: 1,
     pageCount: 1,
     isLastPage: false,
   });
-  const { searchQuery, page, status, isLastPage, normData, pageCount } = state;
+  const {
+    searchOptions: { searchQuery, page, per_page, image_type, orientation },
+    status,
+    isLastPage,
+    normData,
+    pageCount,
+  } = state;
 
   useEffect(() => {
     if (searchQuery === '' || pageCount > page) return;
@@ -34,7 +45,13 @@ export const App = () => {
     async function foo() {
       try {
         dispatch({ status: PENDING, error: null });
-        const fetchedData = await imageAPI.fetchImage(searchQuery, page);
+        const fetchedData = await imageAPI.fetchImage(
+          searchQuery,
+          page,
+          per_page,
+          image_type,
+          orientation
+        );
         const normData = [...state.normData, ...normalize(fetchedData)];
 
         fetchedData.length > 0
@@ -53,25 +70,63 @@ export const App = () => {
       }
     }
     foo();
-  }, [searchQuery, page, normData, state.normData, pageCount]);
+  }, [
+    searchQuery,
+    page,
+    normData,
+    state.normData,
+    pageCount,
+    per_page,
+    image_type,
+    orientation,
+  ]);
 
   const handleSubmit = ({ searchQuery }) => {
     dispatch({
+      searchOptions: { ...state.searchOptions, searchQuery, page: 1 },
       status: IDLE,
       error: null,
-      searchQuery,
       normData: [],
-      page: 1,
       pageCount: 1,
       isLastPage: false,
     });
   };
 
-  const handleClick = () => dispatch({ page: state.page + 1 });
+  const handleSelect = ({ value }, { name }) =>
+    dispatch({
+      searchOptions: { ...state.searchOptions, searchQuery: value, page: 1 },
+      status: IDLE,
+      error: null,
+      normData: [],
+      pageCount: 1,
+      isLastPage: false,
+    });
+
+  const handleChange = ({ value }, { name }) =>
+    dispatch({
+      searchOptions: {
+        ...state.searchOptions,
+        [name]: value,
+      },
+    });
+
+  const handleClick = () =>
+    dispatch({
+      searchOptions: {
+        ...state.searchOptions,
+        page: state.searchOptions.page + 1,
+      },
+    });
 
   return (
     <Section>
-      <Searchbar handleSubmit={handleSubmit} />
+      <Searchbar
+        handleSubmit={handleSubmit}
+        handleChange={handleChange}
+        handleSelect={handleSelect}
+        isLoading={state.status === PENDING}
+        searchQuery={state.searchOptions.searchQuery}
+      />
       <Gallery normData={normData} />
       {status === PENDING && <Loader />}
       {!isLastPage && status === RESOLVED && (

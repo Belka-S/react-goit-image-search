@@ -25,16 +25,16 @@ const reducer = (state, { type, payload }) => {
 
     case IDLE:
       return {
-        searchOptions: {
-          ...state.searchOptions,
-          page: 1,
-          ...payload,
-        },
         status: IDLE,
         error: null,
         normData: [],
         pageCount: 1,
         isLastPage: false,
+        searchOptions: {
+          ...state.searchOptions,
+          page: 1,
+          ...payload,
+        },
       };
 
     case PENDING:

@@ -14,10 +14,55 @@ const PENDING = 'pending';
 const REJECTED = 'rejected';
 const RESOLVED = 'resolved';
 
-const reducer = (state, action) => ({ ...state, ...action });
+// const reducer = (state, action) => ({ ...state, ...action });
+const reducer = (state, { type, payload }) => {
+  switch (type) {
+    case 'SEARCH_OPTIONS':
+      return {
+        ...state,
+        searchOptions: { ...state.searchOptions, ...payload },
+      };
+
+    case IDLE:
+      return {
+        searchOptions: {
+          ...state.searchOptions,
+          page: 1,
+          ...payload,
+        },
+        status: IDLE,
+        error: null,
+        normData: [],
+        pageCount: 1,
+        isLastPage: false,
+      };
+
+    case PENDING:
+      return { ...state, status: PENDING, error: null };
+
+    case REJECTED:
+      return { ...state, status: REJECTED, isLastPage: true, payload };
+
+    case RESOLVED:
+      return {
+        ...state,
+        status: RESOLVED,
+        pageCount: state.pageCount + 1,
+        ...payload,
+      };
+
+    default:
+      throw new Error(`Unsupported action type${type}`);
+  }
+};
 
 export const App = () => {
   const [state, dispatch] = useReducer(reducer, {
+    status: IDLE,
+    error: null,
+    normData: [],
+    pageCount: 1,
+    isLastPage: false,
     searchOptions: {
       searchQuery: '',
       image_type: 'all',
@@ -25,19 +70,12 @@ export const App = () => {
       per_page: 24,
       page: 1,
     },
-    status: IDLE,
-    error: null,
-    normData: [],
-    pageCount: 1,
-    isLastPage: false,
   });
-  const {
-    searchOptions: { searchQuery, page, per_page, image_type, orientation },
-    status,
-    isLastPage,
-    normData,
-    pageCount,
-  } = state;
+
+  const { status, isLastPage, normData, pageCount } = state;
+  const { searchQuery, page, per_page, image_type, orientation } =
+    state.searchOptions;
+
   // const controller = useRef();
   useEffect(() => {
     if (searchQuery === '' || pageCount > page) return;
@@ -47,25 +85,19 @@ export const App = () => {
       // controller.current && controller.current.abort();
       // controller.current = new AbortController();
       try {
-        dispatch({ status: PENDING, error: null });
+        dispatch({ type: PENDING });
         const fetchedData = await imageAPI.fetchImage(
           { searchQuery, page, per_page, image_type, orientation },
           controller.signal
         );
+
         const normData = [...state.normData, ...normalize(fetchedData)];
+        const isLastPage = fetchedData.length === 0;
 
-        fetchedData.length > 0
-          ? notifyOk(normData.length)
-          : notifyEnd(normData.length);
-
-        dispatch({
-          status: RESOLVED,
-          isLastPage: fetchedData.length === 0,
-          pageCount: pageCount + 1,
-          normData,
-        });
+        dispatch({ type: RESOLVED, payload: { isLastPage, normData } });
+        isLastPage ? notifyEnd(normData.length) : notifyOk(normData.length);
       } catch (error) {
-        dispatch({ error, status: REJECTED, isLastPage: true });
+        dispatch({ type: REJECTED, payload: error });
         normData[0] && notifyEnd(normData.length);
       }
     }
@@ -75,53 +107,30 @@ export const App = () => {
       controller.abort();
     };
   }, [
-    searchQuery,
-    page,
+    image_type,
     normData,
-    state.normData,
+    orientation,
+    page,
     pageCount,
     per_page,
-    image_type,
-    orientation,
+    searchQuery,
+    state.normData,
   ]);
 
-  const handleSubmit = ({ searchQuery }) => {
-    dispatch({
-      searchOptions: { ...state.searchOptions, searchQuery, page: 1 },
-      status: IDLE,
-      error: null,
-      normData: [],
-      pageCount: 1,
-      isLastPage: false,
-    });
-  };
+  const handleSubmit = ({ searchQuery }) =>
+    dispatch({ type: IDLE, payload: { searchQuery } });
 
-  const handleSelect = ({ value }, { name }) =>
-    dispatch({
-      searchOptions: { ...state.searchOptions, searchQuery: value, page: 1 },
-      status: IDLE,
-      error: null,
-      normData: [],
-      pageCount: 1,
-      isLastPage: false,
-    });
+  const handleSelect = ({ value }) =>
+    dispatch({ type: IDLE, payload: { searchQuery: value } });
 
   const handleChange = ({ value }, { name }) =>
-    dispatch({
-      searchOptions: {
-        ...state.searchOptions,
-        [name]: value,
-      },
-    });
+    dispatch({ type: 'SEARCH_OPTIONS', payload: { [name]: value } });
 
   const handleClick = () =>
     dispatch({
-      searchOptions: {
-        ...state.searchOptions,
-        page: state.searchOptions.page + 1,
-      },
+      type: 'SEARCH_OPTIONS',
+      payload: { page: state.searchOptions.page + 1 },
     });
-
   return (
     <Section>
       <Searchbar

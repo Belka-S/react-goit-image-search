@@ -100,7 +100,7 @@ const optionsCategory = SAEARCH_OPTIONS().category.map(el => ({
 
 export const SelectCategory = ({ handleSelect, isLoading, searchQuery }) => (
   <Select
-    onChange={(option, name) => handleSelect(option, name)}
+    onChange={option => handleSelect(option)}
     placeholder={
       searchQuery === '' ? 'Select category' : `Looking for "${searchQuery}"`
     }

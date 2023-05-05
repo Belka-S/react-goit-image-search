@@ -6,6 +6,14 @@ import css from 'styles/Styles.module.scss';
 export const GalleryItem = ({ normData, webformatURL, tags }) => {
   const [modalImage, setModalImage] = useState(null);
 
+  const openModal = e => {
+    const modalImage = normData.filter(el => el.webformatURL === e.target.src);
+    const index = normData.findIndex(el => el.webformatURL === e.target.src);
+    setModalImage({ ...modalImage[0], index });
+  };
+
+  const closeModal = () => setModalImage(null);
+
   const showNextImage = step => {
     const { index } = modalImage;
     index === normData.length - 1 && setModalImage({ index: 0 });
@@ -33,14 +41,6 @@ export const GalleryItem = ({ normData, webformatURL, tags }) => {
       largeImageURL: normData[index + step].largeImageURL,
       tags: normData[index + step].tags,
     });
-  };
-
-  const closeModal = () => setModalImage(null);
-
-  const openModal = e => {
-    const modalImage = normData.filter(el => el.webformatURL === e.target.src);
-    const index = normData.findIndex(el => el.webformatURL === e.target.src);
-    setModalImage({ ...modalImage[0], index });
   };
 
   return (

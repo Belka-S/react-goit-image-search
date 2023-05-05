@@ -38,19 +38,19 @@ export const App = () => {
     normData,
     pageCount,
   } = state;
-
+  // const controller = useRef();
   useEffect(() => {
     if (searchQuery === '' || pageCount > page) return;
+    const controller = new AbortController();
 
     async function foo() {
+      // controller.current && controller.current.abort();
+      // controller.current = new AbortController();
       try {
         dispatch({ status: PENDING, error: null });
         const fetchedData = await imageAPI.fetchImage(
-          searchQuery,
-          page,
-          per_page,
-          image_type,
-          orientation
+          { searchQuery, page, per_page, image_type, orientation },
+          controller.signal
         );
         const normData = [...state.normData, ...normalize(fetchedData)];
 
@@ -70,6 +70,10 @@ export const App = () => {
       }
     }
     foo();
+
+    return () => {
+      controller.abort();
+    };
   }, [
     searchQuery,
     page,

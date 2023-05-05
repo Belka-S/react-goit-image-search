@@ -81,7 +81,7 @@ export const App = () => {
     if (searchQuery === '' || pageCount > page) return;
     const controller = new AbortController();
 
-    async function foo() {
+    async function fetch() {
       // controller.current && controller.current.abort();
       // controller.current = new AbortController();
       try {
@@ -101,7 +101,7 @@ export const App = () => {
         normData[0] && notifyEnd(normData.length);
       }
     }
-    foo();
+    fetch();
 
     return () => {
       controller.abort();
@@ -127,18 +127,16 @@ export const App = () => {
     dispatch({ type: 'SEARCH_OPTIONS', payload: { [name]: value } });
 
   const handleClick = () =>
-    dispatch({
-      type: 'SEARCH_OPTIONS',
-      payload: { page: state.searchOptions.page + 1 },
-    });
+    dispatch({ type: 'SEARCH_OPTIONS', payload: { page: page + 1 } });
+
   return (
     <Section>
       <Searchbar
         handleSubmit={handleSubmit}
         handleChange={handleChange}
         handleSelect={handleSelect}
-        isLoading={state.status === PENDING}
-        searchQuery={state.searchOptions.searchQuery}
+        isLoading={status === PENDING}
+        searchQuery={searchQuery}
       />
       <Gallery normData={normData} />
       {status === PENDING && <Loader />}

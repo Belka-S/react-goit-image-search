@@ -11,16 +11,15 @@ import { FormSearch } from './FormSearch';
 
 export const Searchbar = ({
   handleSubmit,
-  handleChange,
   handleSelect,
   isLoading,
   searchQuery,
 }) => {
   return (
     <header className={css.Searchbar}>
-      <SelectImageType handleChange={handleChange} />
-      <SelectImageOrientation handleChange={handleChange} />
-      <SelectPerPage handleChange={handleChange} />
+      <SelectImageType handleSelect={handleSelect} />
+      <SelectImageOrientation handleSelect={handleSelect} />
+      <SelectPerPage handleSelect={handleSelect} />
       <FormSearch handleSubmit={handleSubmit} />
       <SelectCategory
         handleSelect={handleSelect}
@@ -33,7 +32,6 @@ export const Searchbar = ({
 
 Searchbar.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
-  handleChange: PropTypes.func.isRequired,
   handleSelect: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
   searchQuery: PropTypes.string,

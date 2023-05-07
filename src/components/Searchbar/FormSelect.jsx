@@ -47,9 +47,9 @@ const optionsPerPage = [
   { value: 162, label: '162 per page' },
 ];
 
-export const SelectPerPage = ({ handleChange }) => (
+export const SelectPerPage = ({ handleSelect }) => (
   <Select
-    onChange={(option, name) => handleChange(option, name)}
+    onChange={(option, name) => handleSelect(option, name)}
     name="per_page"
     options={optionsPerPage}
     styles={styles}
@@ -68,9 +68,9 @@ const optionsImagaType = SAEARCH_OPTIONS().image_type.map(el => ({
   label: el,
 }));
 
-export const SelectImageType = ({ handleChange }) => (
+export const SelectImageType = ({ handleSelect }) => (
   <Select
-    onChange={(option, name) => handleChange(option, name)}
+    onChange={(option, name) => handleSelect(option, name)}
     placeholder={'Select type...'}
     name="image_type"
     options={optionsImagaType}
@@ -83,9 +83,9 @@ const optionsOrientation = SAEARCH_OPTIONS().orientation.map(el => ({
   label: el,
 }));
 
-export const SelectImageOrientation = ({ handleChange }) => (
+export const SelectImageOrientation = ({ handleSelect }) => (
   <Select
-    onChange={(option, name) => handleChange(option, name)}
+    onChange={(option, name) => handleSelect(option, name)}
     name="orientation"
     options={optionsOrientation}
     styles={styles}
@@ -100,7 +100,7 @@ const optionsCategory = SAEARCH_OPTIONS().category.map(el => ({
 
 export const SelectCategory = ({ handleSelect, isLoading, searchQuery }) => (
   <Select
-    onChange={option => handleSelect(option)}
+    onChange={(option, name) => handleSelect(option, name)}
     placeholder={
       searchQuery === '' ? 'Select category' : `Looking for "${searchQuery}"`
     }

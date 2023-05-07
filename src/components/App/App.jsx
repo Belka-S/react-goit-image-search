@@ -17,10 +17,21 @@ const RESOLVED = 'resolved';
 // const reducer = (state, action) => ({ ...state, ...action });
 const reducer = (state, { type, payload }) => {
   switch (type) {
-    case 'SEARCH_OPTIONS':
+    case 'NEW_SEARCH':
       return {
         ...state,
-        searchOptions: { ...state.searchOptions, ...payload },
+        searchOptions: { ...state.searchOptions, page: 1, ...payload },
+        normData: [],
+        pageCount: 1,
+      };
+
+    case 'INCREMRNT_PAGE':
+      return {
+        ...state,
+        searchOptions: {
+          ...state.searchOptions,
+          page: state.searchOptions.page + 1,
+        },
       };
 
     case IDLE:
@@ -72,9 +83,8 @@ export const App = () => {
     },
   });
 
-  const { status, isLastPage, normData, pageCount } = state;
-  const { searchQuery, page, per_page, image_type, orientation } =
-    state.searchOptions;
+  const { status, isLastPage, normData, pageCount, searchOptions } = state;
+  const { searchQuery, page } = state.searchOptions;
 
   // const controller = useRef();
   useEffect(() => {
@@ -87,7 +97,7 @@ export const App = () => {
       try {
         dispatch({ type: PENDING });
         const fetchedData = await imageAPI.fetchImage(
-          { searchQuery, page, per_page, image_type, orientation },
+          searchOptions,
           controller.signal
         );
 
@@ -106,34 +116,25 @@ export const App = () => {
     return () => {
       controller.abort();
     };
-  }, [
-    image_type,
-    normData,
-    orientation,
-    page,
-    pageCount,
-    per_page,
-    searchQuery,
-    state.normData,
-  ]);
+  }, [normData, page, pageCount, searchOptions, searchQuery, state.normData]);
 
   const handleSubmit = ({ searchQuery }) =>
     dispatch({ type: IDLE, payload: { searchQuery } });
 
-  const handleSelect = ({ value }) =>
-    dispatch({ type: IDLE, payload: { searchQuery: value } });
+  const handleSelect = ({ value }, { name }) => {
+    dispatch(
+      name !== 'category'
+        ? { type: 'NEW_SEARCH', payload: { [name]: value } }
+        : { type: 'NEW_SEARCH', payload: { searchQuery: value } }
+    );
+  };
 
-  const handleChange = ({ value }, { name }) =>
-    dispatch({ type: 'SEARCH_OPTIONS', payload: { [name]: value } });
-
-  const handleClick = () =>
-    dispatch({ type: 'SEARCH_OPTIONS', payload: { page: page + 1 } });
+  const handleClick = () => dispatch({ type: 'INCREMRNT_PAGE' });
 
   return (
     <Section>
       <Searchbar
         handleSubmit={handleSubmit}
-        handleChange={handleChange}
         handleSelect={handleSelect}
         isLoading={status === PENDING}
         searchQuery={searchQuery}
